@@ -38,7 +38,7 @@ _.forEach(rooms, function(room) {
         console.log('connection');
 
         if(queue.length>0){
-            iosa.emit("message", {id:0,message:queue[queue.length-1]});
+            socket.emit("message", {id:0,message:queue[queue.length-1]});
         }
         socket.on('message', function (message) {
             console.log(message);
