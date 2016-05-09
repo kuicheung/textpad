@@ -81,7 +81,7 @@ _.forEach(rooms, function(room) {
             message = JSON.parse(message);
             if (message.clearQueue) {
                 queue = [];
-                iosa.emit('message', [0, '']);
+                iosa.emit('message', {id:0,message:[0, '']});
             }
         });
         socket.on('disconnect', function () {
