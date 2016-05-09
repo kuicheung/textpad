@@ -42,9 +42,9 @@ _.forEach(rooms, function(room) {
             if (queue.length === 0) {
                 startTime = Date.now();
             }
-            var history = [Date.now() - startTime, message];
+            var history = [Date.now() - startTime, message.text];
             queue.push(history);
-            iosa.emit("message", history);
+            iosa.emit("message", {id:message.id,message:history});
         });
 
         socket.on('playback', function (message) {
@@ -66,9 +66,8 @@ _.forEach(rooms, function(room) {
                     }
                     var time = current[0];
                     var text = current[1];
-                    console.log('time ' + time);
                     if (time < (Date.now() - startTime)) {
-                        iosa.emit("message", current);
+                        iosa.emit("message", {id:0,message:current});
                         current = temp.shift();
                     }
                 }, 50);
