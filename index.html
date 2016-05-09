@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        textarea {
+            width:500px;
+            height:300px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="application/javascript">
+        $(document).ready(function(){
+            $('#input').keyup(function(){
+                sendMessageToServer( $(this).val());
+            });
+
+            $('#clearBtn').click(function(){
+                sendClearQueueToServer();
+            });
+
+            var playback;
+            $('#startBtn').click(function(){
+                console.log('start');
+                sendStartPlaybackToServer();
+            });
+
+            $('#stopBtn').click(function(){
+                console.log('stop');
+                sendStopPlaybackToServer();
+            });
+
+            var roomName = location.pathname.replace(/.*(\/\w+)/,'$1');
+            var socket = new io.connect(roomName);
+
+            socket.on('connect',function() {
+                console.log('Client has connected to the server!');
+            });
+            socket.on('message',function(data) {
+                console.log('Received a message from the server!',data);
+                $('#input').val(data[1]);
+            });
+            socket.on('disconnect',function() {
+                console.log('The client has disconnected!');
+            });
+
+            function sendMessageToServer(message) {
+                socket.emit('message',message);
+            }
+            function sendStopPlaybackToServer(){
+                socket.emit('playback', '{"playback":false}');
+            }
+            function sendStartPlaybackToServer(){
+                socket.emit('playback', '{"playback":true}');
+            }
+            function sendClearQueueToServer(){
+                socket.emit('clearQueue', '{"clearQueue":true}');
+            }
+
+
+        });
+
+    </script>
+</head>
+<body>
+    <textarea id="input"></textarea>
+    <div>
+        <button id="startBtn">Start</button>
+        <button id="stopBtn">Stop</button>
+        <button id="clearBtn">Clear</button>
+    </div>
+</body>
+</html>
